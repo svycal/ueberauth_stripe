@@ -39,7 +39,7 @@ defmodule Ueberauth.Strategy.Stripe.OAuth do
     opts
     |> OAuth2.Client.new()
     |> OAuth2.Client.put_serializer("application/json", json_library)
-    |> Oauth2.Client.put_header("stripe-version", "2020-03-02")
+    |> OAuth2.Client.put_header("stripe-version", "2020-03-02")
   end
 
   @doc """
