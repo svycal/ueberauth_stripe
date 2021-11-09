@@ -15,12 +15,10 @@ defmodule Ueberauth.Strategy.Stripe do
   Handles the initial redirect to the Stripe authentication page.
   """
   def handle_request!(conn) do
-    opts =
-      [redirect_uri: callback_url(conn)]
-      |> with_scope(conn)
-
+    params = [] |> with_scope(conn)
+    opts = [redirect_uri: callback_url(conn)]
     module = option(conn, :oauth2_module)
-    redirect!(conn, apply(module, :authorize_url!, [[], opts]))
+    redirect!(conn, apply(module, :authorize_url!, [params, opts]))
   end
 
   @doc """
@@ -120,7 +118,8 @@ defmodule Ueberauth.Strategy.Stripe do
 
     case apply(module, :get, [
            token,
-           "/v1/accounts/#{account_id}"
+           "/v1/accounts/#{account_id}",
+           [{"stripe-version", "2020-03-02"}]
          ]) do
       {:ok, %{status_code: 200, body: user}} ->
         put_private(conn, :stripe_user, user)
