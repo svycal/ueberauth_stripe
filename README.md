@@ -28,10 +28,20 @@
     Use that if you want to read client ID/secret from the environment
     variables in the compile time:
 
+
     ```elixir
     config :ueberauth, Ueberauth.Strategy.Stripe.OAuth,
       client_id: System.get_env("STRIPE_CLIENT_ID"),
       client_secret: System.get_env("STRIPE_CLIENT_SECRET")
+    ```
+
+    Use that if you want to read client ID/secret from the environment
+    variables in the run time:
+
+    ```elixir
+    config :ueberauth, Ueberauth.Strategy.Stripe.OAuth,
+      client_id: {System, :get_env, ["STRIPE_CLIENT_ID"]},
+      client_secret: {System, :get_env, ["STRIPE_CLIENT_SECRET"]}
     ```
 
 1.  Include the Überauth plug in your controller:
