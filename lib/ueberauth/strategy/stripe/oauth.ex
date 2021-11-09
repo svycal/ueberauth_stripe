@@ -77,7 +77,9 @@ defmodule Ueberauth.Strategy.Stripe.OAuth do
 
   @impl OAuth2.Strategy
   def get_token(client, params, headers) do
-    OAuth2.Strategy.AuthCode.get_token(client, params, headers)
+    client
+    |> OAuth2.Strategy.AuthCode.get_token(params, headers)
+    |> put_header("authorization", "Basic " <> Base.encode64(client.client_secret <> ":"))
   end
 
   defp resolve_values(list) do
