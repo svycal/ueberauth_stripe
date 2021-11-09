@@ -13,7 +13,12 @@ defmodule Ueberauth.Strategy.StripeTest do
 
       expect(OAuthMock, :authorize_url!, fn params, opts ->
         assert params == []
-        assert opts == [{:redirect_uri, "http://www.example.com/auth/stripe/callback"}]
+
+        assert opts == [
+                 {:scope, "read_only"},
+                 {:redirect_uri, "http://www.example.com/auth/stripe/callback"}
+               ]
+
         authorize_url
       end)
 

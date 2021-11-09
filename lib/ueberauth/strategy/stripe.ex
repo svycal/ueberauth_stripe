@@ -4,6 +4,7 @@ defmodule Ueberauth.Strategy.Stripe do
   """
 
   use Ueberauth.Strategy,
+    default_scope: "read_only",
     oauth2_module: Ueberauth.Strategy.Stripe.OAuth
 
   alias Ueberauth.Auth.Info
@@ -18,17 +19,11 @@ defmodule Ueberauth.Strategy.Stripe do
   def handle_request!(conn) do
     opts =
       [redirect_uri: callback_url(conn)]
-      |> put_state_option(conn)
+      |> with_scopes(conn)
 
     module = option(conn, :oauth2_module)
     redirect!(conn, apply(module, :authorize_url!, [[], opts]))
   end
-
-  defp put_state_option(opts, %{params: %{"state" => state}}) do
-    Keyword.put(opts, :state, state)
-  end
-
-  defp put_state_option(opts, _), do: opts
 
   @doc """
   Handles the callback from Stripe.
@@ -158,5 +153,10 @@ defmodule Ueberauth.Strategy.Stripe do
 
   defp option(conn, key) do
     Keyword.get(options(conn), key, Keyword.get(default_options(), key))
+  end
+
+  defp with_scopes(opts, conn) do
+    scopes = conn.params["scope"] || option(conn, :default_scope)
+    Keyword.put(opts, :scope, scopes)
   end
 end
