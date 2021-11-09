@@ -47,9 +47,7 @@ defmodule Ueberauth.Strategy.Stripe.OAuth do
   """
   @impl OAuthStrategy
   def authorize_url!(params \\ [], opts \\ []) do
-    opts
-    |> client
-    |> OAuth2.Client.authorize_url!(params)
+    OAuth2.Client.authorize_url!(client(opts), params)
   end
 
   @doc """
@@ -79,9 +77,7 @@ defmodule Ueberauth.Strategy.Stripe.OAuth do
 
   @impl OAuth2.Strategy
   def get_token(client, params, headers) do
-    client
-    |> put_header("accept", "application/json")
-    |> OAuth2.Strategy.AuthCode.get_token(params, headers)
+    OAuth2.Strategy.AuthCode.get_token(client, params, headers)
   end
 
   defp resolve_values(list) do

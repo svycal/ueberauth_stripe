@@ -13,13 +13,11 @@ defmodule Ueberauth.Strategy.Stripe do
 
   @doc """
   Handles the initial redirect to the Stripe authentication page.
-
-  You can also include a `state` param that Stripe will return to you.
   """
   def handle_request!(conn) do
     opts =
       [redirect_uri: callback_url(conn)]
-      |> with_scopes(conn)
+      |> with_scope(conn)
 
     module = option(conn, :oauth2_module)
     redirect!(conn, apply(module, :authorize_url!, [[], opts]))
@@ -40,6 +38,7 @@ defmodule Ueberauth.Strategy.Stripe do
         |> fetch_user(token)
 
       err ->
+        IO.inspect(err)
         handle_failure(conn, err)
     end
   end
@@ -155,8 +154,8 @@ defmodule Ueberauth.Strategy.Stripe do
     Keyword.get(options(conn), key, Keyword.get(default_options(), key))
   end
 
-  defp with_scopes(opts, conn) do
-    scopes = conn.params["scope"] || option(conn, :default_scope)
-    Keyword.put(opts, :scope, scopes)
+  defp with_scope(opts, conn) do
+    scope = conn.params["scope"] || option(conn, :default_scope)
+    Keyword.put(opts, :scope, scope)
   end
 end
