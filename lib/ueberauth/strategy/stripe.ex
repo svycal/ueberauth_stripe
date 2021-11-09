@@ -38,7 +38,6 @@ defmodule Ueberauth.Strategy.Stripe do
         |> fetch_user(token)
 
       err ->
-        IO.inspect(err)
         handle_failure(conn, err)
     end
   end
