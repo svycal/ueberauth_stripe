@@ -93,7 +93,11 @@ defmodule Ueberauth.Strategy.Stripe do
 
     %Info{
       email: user["email"],
-      name: user["business_profile"]["name"]
+      name:
+        user
+        |> Map.get("settings", %{})
+        |> Map.get("dashboard", %{})
+        |> Map.get("display_name", nil)
     }
   end
 
