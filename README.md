@@ -1,4 +1,4 @@
-# Überauth Stripe
+# Überauth Stripe [![Hex Version](https://img.shields.io/hexpm/v/ueberauth_stripe.svg)](https://hex.pm/packages/ueberauth_stripe)
 
 > Stripe OAuth2 strategy for Überauth.
 
