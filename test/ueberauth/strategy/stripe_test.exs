@@ -5,14 +5,12 @@ defmodule Ueberauth.Strategy.StripeTest do
 
   import Mox
 
-  @provider_config Keyword.get(Application.get_env(:ueberauth, Ueberauth)[:providers], :stripe)
-
   describe "handle_request!/1" do
     test "passes the correct data to the OAuth request" do
       authorize_url = "https://stripeapi.test"
 
       expect(OAuthMock, :authorize_url!, fn params, opts ->
-        assert params == [{:scope, "read_only"}]
+        assert Keyword.get(params, :scope) == "read_only"
 
         assert opts == [
                  {:redirect_uri, "http://www.example.com/auth/stripe/callback"}
@@ -23,28 +21,14 @@ defmodule Ueberauth.Strategy.StripeTest do
 
       conn =
         conn(:get, "/", %{})
-        |> Ueberauth.run_request(:stripe, @provider_config)
+        |> Ueberauth.run_request(:stripe, provider_config())
 
-      assert %Plug.Conn{
-               private: %{
-                 ueberauth_request_options: %{
-                   callback_methods: ["GET"],
-                   callback_path: "/auth/stripe/callback",
-                   request_path: "/auth/stripe",
-                   strategy: Ueberauth.Strategy.Stripe,
-                   strategy_name: :stripe
-                 }
-               },
-               resp_headers: [
-                 {"cache-control", "max-age=0, private, must-revalidate"},
-                 {"location", ^authorize_url}
-               ],
-               scheme: :http,
-               script_name: [],
-               secret_key_base: nil,
-               state: :sent,
-               status: 302
-             } = conn
+      assert conn.status == 302
+      assert [^authorize_url] = get_resp_header(conn, "location")
     end
+  end
+
+  defp provider_config do
+    Keyword.get(Application.get_env(:ueberauth, Ueberauth)[:providers], :stripe)
   end
 end

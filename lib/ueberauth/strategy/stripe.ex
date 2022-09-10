@@ -15,7 +15,7 @@ defmodule Ueberauth.Strategy.Stripe do
   Handles the initial redirect to the Stripe authentication page.
   """
   def handle_request!(conn) do
-    params = [] |> with_scope(conn)
+    params = [] |> with_scope(conn) |> with_state_param(conn)
     opts = [redirect_uri: callback_url(conn)]
     module = option(conn, :oauth2_module)
     redirect!(conn, apply(module, :authorize_url!, [params, opts]))
