@@ -10,7 +10,7 @@
 
     ```elixir
     def deps do
-      [{:ueberauth_stripe, git: "git://github.com/svycal/ueberauth_stripe.git"}]
+      [{:ueberauth_stripe, "~> 0.2.0"}]
     end
     ```
 
